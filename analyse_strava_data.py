@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 @st.cache_data
 def read_csv(csv_file):
-    df = pd.read_csv("https://github.com/driverxxvii/streamlit-strava-data/blob/main/cycling_data.csv")
+    df = pd.read_csv("https://raw.githubusercontent.com/driverxxvii/streamlit-strava-data/main/cycling_data.csv")
 
     # Create helper columns
     # Convert duration in seconds to hr:min:secs
