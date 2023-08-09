@@ -4,7 +4,7 @@ import plotly.express as px
 from datetime import datetime, timedelta
 
 
-@st.cache_data
+# @st.cache_data
 def read_csv(csv_file):
     df = pd.read_csv("https://raw.githubusercontent.com/driverxxvii/streamlit-strava-data/main/cycling_data.csv")
 
