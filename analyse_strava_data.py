@@ -5,7 +5,10 @@ from datetime import datetime, timedelta
 
 
 # @st.cache_data
-def read_csv():
+def read_csv(csv_file):
+    # df = pd.read_csv(csv_file)
+
+    # For file in github
     df = pd.read_csv("https://raw.githubusercontent.com/driverxxvii/streamlit-strava-data/main/cycling_data.csv")
 
     # Create helper columns
@@ -21,8 +24,8 @@ def read_csv():
     df["Avg Speed"] = round((df["Distance"] / df["Duration"]) * 3600, 2)
 
     # Columns in df
-    # Recorded On,Activity Date,Start Time,Finish Time,Distance,Duration,Max Speed
-    # Ride Time, MonthNum, Year, Avg Speed
+    # From csv - Recorded On,Activity Date,Start Time,Finish Time,Distance,Duration,Max Speed
+    # calculated - Ride Time, MonthNum, Year, Avg Speed
 
     return df
 
@@ -45,18 +48,15 @@ def monthly_summary_by_year(df, year):
                                        "count": "Rides",
                                        "mean": "Avg Dist"}, inplace=True)
 
-    # print(monthly_summary_df)
     return monthly_summary_df
 
 
 def top_n_days(df, n):
-    # df["Activity Date"] = pd.to_datetime(df["Activity Date"])  # change to datetime data type
     date_group = df.groupby(["Activity Date"])
     aggregator = "Distance"
     summary_stats = ["sum", "count", "mean"]
     day_agg = date_group[aggregator].agg(summary_stats).round(3)
     top_n_days_df = day_agg.nlargest(n, "sum")
-    # print(top_n_days_df)
     return top_n_days_df
 
 
@@ -92,6 +92,8 @@ def summary_metrics(df):
 
 
 def st_lit(df):
+    # The order in which the elements appear on the webpage is determined by this
+    # Functions starting st_lit_### are functions that are writing to the webpage
     st_lit_last4weeks(df)
     st_lit_monthly_summary(df)
     st_lit_monthly_totals(df)
@@ -101,7 +103,7 @@ def st_lit(df):
 def st_lit_monthly_summary(df):
     st.subheader(f"Monthly summary by year")
     years = df["Year"].unique().tolist()
-    year = st.selectbox("Year", years, index=len(years) - 1)
+    year = st.selectbox("Year", years, index=len(years) - 1)    # year is the selected year from the drop down
 
     year_df = df.loc[df["Year"] == year]
     summary_metrics(year_df)
@@ -148,6 +150,7 @@ def st_lit_longest_rides(df):
 
 
 def st_lit_monthly_totals(df):
+    # Create a pivot table with years on top and months as rows
     st.subheader(f"Monthly totals in Km")
     pivot_df = df.pivot_table(values="Distance",
                               index=["MonthNum", "Month"],  # multi index month to sort correctly by month
@@ -184,7 +187,7 @@ def st_lit_last4weeks(df):
     last4weeks_df_group_day["Ride Time"] = pd.to_datetime(last4weeks_df_group_day["Duration"], unit="s").dt.strftime("%H:%M:%S")
     last4weeks_df_group_day["Avg Speed"] = \
         round((last4weeks_df_group_day["Distance"] / last4weeks_df_group_day["Duration"]) * 3600, 2)
-    print(last4weeks_df_group_day)
+
     tab1, tab2 = st.tabs(["By Ride", "By Day"])
     with tab1:
         fig = px.bar(last4weeks_df,
@@ -229,11 +232,10 @@ def st_lit_last4weeks(df):
 
 
 def main():
-    df = read_csv()
-    # print(monthly_summary_by_year(df, 2023))
-    # print(top_n_days(df, 10))
-    # print(top_n_rides(df, 10))
-    # top_max_speeds(df, 30)
+    csv_file_path = r"C:\Users\User1\My Drive\09 Python Projects\Strava_Cycling_Data\cycling_data.csv"
+    df = read_csv(csv_file_path)
     st_lit(df)
 
-main()
+
+if __name__ == "__main__":
+    main()
