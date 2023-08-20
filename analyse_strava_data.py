@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 
 # @st.cache_data
-def read_csv(csv_file):
+def read_csv():
     df = pd.read_csv("https://raw.githubusercontent.com/driverxxvii/streamlit-strava-data/main/cycling_data.csv")
 
     # Create helper columns
@@ -229,14 +229,11 @@ def st_lit_last4weeks(df):
 
 
 def main():
-    csv_file_path = r"C:\Users\User1\My Drive\09 Python Projects\Strava_Cycling_Data\cycling_data.csv"
-    df = read_csv(csv_file_path)
+    df = read_csv()
     # print(monthly_summary_by_year(df, 2023))
     # print(top_n_days(df, 10))
     # print(top_n_rides(df, 10))
     # top_max_speeds(df, 30)
     st_lit(df)
 
-
-if __name__ == "__main__":
-    main()
+main()
